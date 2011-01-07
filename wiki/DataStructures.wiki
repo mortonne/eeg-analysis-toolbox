@@ -1,5 +1,5 @@
 = Data Structures =
 
-The EEG Analysis Toolbox uses a number of standard data structures, including "objects" that represent [Experiments experiments],  and [Events events] in the experiment.  EEG data is represented in [Patterns patterns]; running analyses adds [Statistics statistics objects] to patterns.  Each of these objects has a unique name, allowing different analyses to easily be saved and recovered later.
+The EEG Analysis Toolbox uses a number of standard data structures, including "objects" that represent [Experiments experiments],  and [Events events] in the experiment.  EEG data is represented in [Patterns patterns]; running analyses adds [Statistics statistics] objects to patterns.  Each of these objects has a unique name, allowing different analyses to easily be saved and recovered later.
 
 Plots are automatically stored in [Figure] objects, which contain references to the saved figures.  These figure objects can then be used to generate PDF [Reports] which are organized by subject and / or dimensions like electrode or time bin.
