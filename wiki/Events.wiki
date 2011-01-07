@@ -12,6 +12,8 @@ Since events structures can be large, they are generally not stored as part of t
 events = get_mat(getobj(exp, 'subj', 'LTP015', 'ev', 'study'));
 }}}
 
+{{{getobj}}} retrieves information about the events (including the path to the MAT-file where it is stored), and {{{get_mat}}} loads the events structure.
+
 == Examing events ==
 
 To view an events structure as a table, use {{{disp_events}}}.
