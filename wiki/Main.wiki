@@ -3,6 +3,8 @@
 == Introduction ==
 The EEG Analysis Toolbox (eeg_ana) is a front-end for the UPenn EEG Toolbox (eeg_toolbox). It supports both univariate analysis and multivariate pattern analysis, and can process large amounts of data in parallel. It also includes advanced plotting functions and the ability to generate summary PDF reports.
 
+See the [Installation] page for instructions on installing the toolbox and dependencies, [Tutorials] to get started with common tasks, and the [Manual] for references about data structures and development.
+
 eeg_ana supports limited interfacing with other MATLAB-based toolboxes:
 || Toolbox     || Common Uses ||
 || beh_toolbox || Advanced analysis of memory experiments ||
