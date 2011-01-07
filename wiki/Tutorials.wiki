@@ -1,0 +1,7 @@
+#summary Tutorials for using the EEG Analysis Toolbox.
+
+= Tutorials =
+  * [ImportTutorial Importing data]
+  * [ReportTutorial Creating reports]
+  * [UnivariateTutorial Univariate statistics]
+  * [PatclassTutorial Pattern classification]
