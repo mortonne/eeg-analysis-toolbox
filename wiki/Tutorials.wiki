@@ -1,5 +1,3 @@
-#summary Tutorials for using the EEG Analysis Toolbox.
-
 = Tutorials =
   * [ImportTutorial Importing data]
   * [ReportTutorial Creating reports]
