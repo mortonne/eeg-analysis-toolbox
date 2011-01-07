@@ -1,0 +1,15 @@
+= Installation =
+
+== Dependencies ==
+
+The toolbox uses code projects developed by the Kahana Computational Memory Lab at UPenn.  Since these projects are not updated regularly, we plan on setting up public read-only access to the necessary SVN projects, eeg_toolbox (unstable branch) and beh_toolbox.
+
+Pattern classification requires the [http://code.google.com/p/princeton-mvpa-toolbox/ Princeton MVPA toolbox].  To generate PDF reports, you must have LaTeX installed.
+
+== Setup ==
+
+Download the toolbox and used {{{genpath}}} to add all subdirectories to your path:
+
+{{{
+addpath(genpath('path_to_eeg_ana'))
+}}}
