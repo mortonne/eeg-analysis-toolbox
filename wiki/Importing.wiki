@@ -1,0 +1,3 @@
+= Importing =
+
+Data may be imported either from raw continuous data, or from a standard segmented data format like that used by EEGLAB or fieldTrip.
