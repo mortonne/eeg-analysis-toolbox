@@ -1,4 +1,5 @@
   * [Main]
+  * [Installation]
   * [Tutorials]
     * [ImportTutorial Importing Data]
     * [ReportTutorial Creating Reports]
