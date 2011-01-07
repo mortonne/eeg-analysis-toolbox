@@ -1,0 +1,153 @@
+= eeg_ana toolbox =
+
+== Introduction ==
+eeg_ana is an addition to the [[InternalWiki/eeg_toolbox|eeg_toolbox]], with many features similar to the Princeton Multi-Voxel Pattern Analysis (MVPA) Toolbox.  It is designed to facilitate exploratory analysis of EEG data, and provides simple ways of harnessing the power of a cluster or a multi-core machine.  It also contains a number of functions that are useful for preparing behavioral experiments for analysis using [[InternalWiki/beh_toolbox|beh_toolbox]].  Information about each experiment is stored in a standard structure, so it is straightforward to design an analysis that can be run on multiple experiments.  eeg_ana uses the existing standard of the events structure that is used by the eeg_toolbox, and therefore is compatible with most eeg_toolbox functions.  It also uses a new standard for storing intermediate EEG data, which is detailed in the [[InternalWiki/eeg_ana_patterns|Patterns]] page.
+
+Besides making it easier to run analyses, the toolbox also provides a framework in which to store results. Information both about how an experiment was run and what analyses have been done is stored in a central structure.  This makes it straightforward to generate PDF reports which can contain figures for many subjects, channels, frequencies, etc.
+
+eeg_ana supports limited interfacing with other MATLAB-based toolboxes:
+|| Toolbox     || Common Uses ||
+|| beh_toolbox || Analysis of event sequences; can use FRdata for export and fr_data2events with update_struct to import back to eeg_ana. ||
+|| eeg_toolbox || The core of eeg_ana, used to load voltage and compute spectral power using wavelets. Support may be expanded in the future to include other types of electrophysiology data (e.g. P-episode) supported in eeg_toolbox. ||
+|| EEGLAB      || eeg_ana can export to EEGLAB format (see pat2eeglab). Useful for visualizing data and running ICA. ||
+|| Fieldtrip   || eeg_ana can export to Fieldtrip format (see pat2fieldtrip). Provides advanced statistics, including a permutation-based clustering statistic (planned to be supported in a future version of eeg_ana). ||
+|| MVPA        || Used for pattern classification; eeg_ana supports all MVPA classifiers and performance metrics. ||
+
+The eeg_ana project lives on [[InternalWiki/SVN|SVN]].  The latest stable version is 0.3 ({{{/home/svn/eeg/eeg_ana/branches/0.3}}}); you can also use the trunk version ({{{/home/svn/eeg/eeg_ana/trunk}}}), which changes quickly.  Note that the toolbox currently has a very small user base, so I often don't bother with backwards compatibility when developing the trunk version.  Updates to the version branch will only include bugfixes, not new features, so it will remain stable.
+
+eeg_ana requires the "unstable" branch of eeg_toolbox ({{{svn+ssh://rhino.psych.upenn.edu/home/svn/eeg/eeg_toolbox/branches/unstable}}}), and uses some beh_toolbox functions.
+
+A good way to get acquainted with the basic features of the toolbox is to run through the  [[InternalWiki/eeg_ana_basic_tutorial|Introductory Tutorial]].
+
+The primary author of the eeg_ana toolbox is [[mailto:neal.w.morton@vanderbilt.edu|Neal Morton]].  Feedback and contributions are greatly appreciated!  See the [[InternalWiki/eeg_ana_toolbox/Development|Development]] page for discussion on continued development.
+
+== Plot Examples ==
+
+The first three examples show variations on plotting voltage or power over the whole scalp. These all use EEGLAB functions, which require electrode locations files.  The headplots also require a spline file.  The necessary files for our 128-channel HCGSN caps are included in the eeg_ana SVN project.
+
+{{attachment:topoplot.jpg}}
+{{attachment:headplot.jpg}}
+{{attachment:erptopo.png}}
+
+The plot on the left is an example of an ERP image.  This shows, for electrode Fz, a color map for voltage on every trial, plus an average over all trials at the bottom.  The trials are sorted by the artifactMS field of the events structure, which eeg_toolbox adds to events when they are aligned.  It gives the time in milliseconds on each trial when a blink is first detected. Here, you can see voltage increase immediately after the black line, showing voltage increases due to blinks.
+
+The right plot shows average power for one electrode.
+
+{{attachment:erpimage.png}}
+{{attachment:spectrogram.jpg}}
+
+All of these plots can be embedded into PDF reports with many channels and subjects in a convenient table. Example from trackball data, showing ERPs for various eye movements: [[attachment:eog_report.pdf]]
+
+== The exp structure ==
+
+The exp structure holds basic information about your experiment in a standard format.  Once you have created an exp structure that points to your data, you can begin creating [[InternalWiki/eeg_ana_events|events]] and [[InternalWiki/eeg_ana_patterns|patterns]].
+
+A vector structure, "subj," holds information about each subject that has run in the experiment so far.  A sub-structure of each subj, "sess," contains information about each session.  If the subject ran in an EEG experiment, there will also be a "chan" structure to keep track of information about each electrode.  See below for an explanation of each field.
+
+{{{
+exp
+   .experiment         Name of the experiment
+   .recordingType      'N/A', 'scalp', 'iEEG'
+   .resDir             Directory where results of analyses are saved
+   .file               Path to the .mat file where exp is saved
+   .useLock            Old field applicable to running on hippo (the old cluster)
+   .lastUpdate         Time exp was last saved
+   .subj               Vector structure, with one structure for each subject
+       .id             Identifier of this subject
+       .dir            Path to the directory containing this subject's raw data
+       .chan           Vector structure that holds information about this subject's electrodes (if applicable)
+           .number     Number identifier of this channel
+           .label      String label for this channel; each channel should have a unique label
+           A feature in development will give the option of adding additional fields with information from the talairach database, for use with iEEG recordings.
+       .sess           Vector structure with information about each session run
+           .number     Number identifier
+           .dir        Path to the directory holding raw data
+}}}
+
+=== Initial creation of the exp struct ===
+
+First, you need to create a "subj" struct that contains the identifiers for all the subjects in your experiment, as well as the locations of the raw data for each of their sessions.
+
+For example, an m-file that creates subj could look like this: 
+
+{{{
+subj(1).id = 'UP001';
+subj(1).sess(1).dir = '/data/eeg/UP001/catFR/session_0';
+subj(1).sess(2).dir = '/data/eeg/UP001/catFR/session_1';
+subj(2).id = 'UP002';
+subj(2).sess(1).dir = '/data/eeg/UP002/catFR/session_0';
+subj(2).sess(2).dir = '/data/eeg/UP002/catFR/session_1';
+}}}
+
+In most cases, get_sessdirs.m can be used to generate this structure automatically. Once
+you have a subj struct with all the sessions you want to analyze, run init_exp.m
+or init_iEEG.m to create the exp struct.
+
+=== Importing Events ===
+Now exp has information about each subject and each session that they have run, as well as information about their electrodes.  Next, we need to add information about the experiment.  This is stored in the form of an events structure.  The import_events function can be used to import events if they have already been created and stored in each session's directory.  If events have not been created yet, create_events can be used to create them.  See the [[InternalWiki/eeg_ana_events|events]] page for details on how events are stored in the exp struct.
+
+Once events have been added to the exp structure, you can begin working with EEG data.  See the [[InternalWiki/eeg_ana_patterns|patterns]] page for directions.
+
+=== Working with the exp Structure ===
+
+Often, you will want to grab part of the exp structure to work with, so you don't have to give the whole address each time.  This is best done through the getobj function:
+
+{{{
+% to get all channel numbers for LTP002:
+
+% one way:
+channels = [exp.subj(2).chan.number];
+
+% a better way, so you don't need to know the order subjects are listed
+subj = getobj(exp, 'subj', 'LTP002'); % get the subject structure by ID, rather than index
+
+channels = [subj.chan.number]; % now get the vector of channel numbers
+}}}
+
+Since {{{subj}}} is a row vector structure, iterating over subjects is easy:
+{{{
+% get a cell array of all regions that are covered by electrodes
+regions = {};
+for subj=exp.subj
+  % get all regions corresponding to this subject's electrodes
+  regions = [regions {subj.chan.region}];
+end
+}}}
+
+Note that the above scheme only reads from each subject, and does not modify them.  If you want to make changes to all subjects, the best way to do it is through the apply_to_subj function.
+
+=== File Management ===
+
+Note that the exp struct contains a number of filenames. If you
+change from working on the cluster to working on a local machine (or vice versa), the
+filenames will be incorrect. To remedy this, use {{{struct_strrep.m}}}.
+It will run strrep recursively on every string in the struct or any of its
+sub-structs, and so can be used to change filenames systematically.
+
+Each time the exp struct is
+modified using update_exp.m, a backup is saved in a .mat file whose filename contains
+the current data and time. If you encounter any problems with information in the exp
+struct being overwritten or deleted, use {{{exp_log}}} to see the available backups, and {{{load_exp}}} to load a backup.
+
+Let's say you want to take an experiment structure created by someone else, and work with it in your own directory.  The script {{{copy_exp.m}}} is useful to create a copy that you can work from.  However, you must be careful not to save new files to their directory.  Most functions have an optional "res_dir" input you can use to override the default output directory.
+
+{{{
+Example:  exp = copy_exp(exp,respath);
+}}}
+
+== Analysis ==
+Here is a quick overview of how to do analysis using eeg_ana:
+ 1. Create an exp structure using {{{get_sessdirs}}} and {{{init_exp}}} or {{{init_iEEG}}}.
+  a. If necessary, create events for each session using {{{create_events}}}, then align them to EEG data using {{{post_process_subj}}} (for EGI data) or {{{align_subj}}} (for clinical ECoG data).
+ 1. Import events using {{{import_events}}}.
+ 1. Create EEG patterns using {{{create_voltage_pattern}}} or {{{create_power_pattern}}}.
+ 1. Use various function to manipulate patterns (see the functions in eeg_ana/patterns/operations).  For example, use {{{bin_pattern}}} to average across events or apply binning to the channel, time, or frequency dimension.  Use {{{pat_statistics}}} to test for significant differences between two classes of events.
+ 1. Make plots using {{{pat_erp}}}, {{{pat_tfr}}}, {{{pat_erp_image}}}, {{{pat_topoplot}}}, or {{{pat_plottopo}}}.
+ 1. Make a report to bring the plots together in one PDF using {{{create_pat_report}}}, which makes creating common reports simple, or {{{create_report}}}, which is more flexible.
+
+For details on different types of analyses, see the following pages:
+ * [[InternalWiki/eeg_ana_events|Events]].
+ * [[InternalWiki/eeg_ana_patterns|Patterns]].
+ * [[InternalWiki/eeg_ana_patclass|Patclass]].  
+ * [[InternalWiki/eeg_ana_stats|Stats]].
+ * [[InternalWiki/eeg_ana_plotting|Plotting]].
