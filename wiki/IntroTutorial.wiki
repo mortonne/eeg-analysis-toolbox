@@ -1,0 +1,310 @@
+= eeg_ana Introductory Tutorial =
+
+== Introduction ==
+
+This is a tutorial to introduce new users to the basic features of [[InternalWiki/eeg_ana_toolbox|eeg_ana]].  It's a work in progress; more sections, especially on report generation, will be added in the future.
+
+== What you will need to start with ==
+
+First of all, you must have an account on rhino, since we're going to use data stored there.  This tutorial requires the unstable branch of eeg_toolbox (/home/svn/eeg/eeg_toolbox/branches/unstable), the trunk of eeg_ana (/home/svn/eeg/eeg_ana/trunk), and the trunk of beh_toolbox (/home/svn/matlab/beh_toolbox/trunk). Download each of these projects from SVN, and add each to your Matlab path using {{{addpath(genpath('path_to_project'))}}}.
+
+== Tutorial ==
+
+=== Finding sessions ===
+
+First, load some sample data.  We'll use the catFR LTP data on rhino.  {{{get_sessdirs}}} will automatically find all the sessions that have been run so far.
+
+{{{
+>> dataroot = '/data/eeg/scalp/ltp/catFR';
+>> subj = get_sessdirs(dataroot, 'LTP*');
+}}}
+
+subj is a vector structure with one element for each subject in the experiment.  Each subject object contains a sub-structure called "sess", which contains information about each session they have run.
+
+=== Importing Channel Information ===
+Next, we'll import information about each subject's electrodes using {{{import_channels}}}. This function, like many functions in the toolbox, is designed to only process one subject.  To apply a function to all subjects, use {{{apply_to_subj}}}.  It steps over every subject in the {{{subj}}} vector, passes it into the specified function, then places the modified subject structure back into the subject vector. 
+
+{{{
+>> subj = apply_to_subj(subj, @import_channels, {'HCGSN128.loc'});
+LTP001
+readlocs(): 'loc' format assumed from file extension
+LTP002
+readlocs(): 'loc' format assumed from file extension
+LTP003
+readlocs(): 'loc' format assumed from file extension
+...
+apply_to_subj: finished: 0.58 seconds.
+}}}
+
+This sets labels for channels that correspond to 10-20 electrodes. For example, channel 129 is "Cz".
+
+=== Initializing an experiment ("exp") object ===
+
+Next, we need to specify a directory to save our results in.  Information about all analyses will be stored in an experiment object, which is saved as exp.mat in the results directory. In this example, we'll save the experiment object in ~/results/catFR, but you can save it wherever you like.
+
+{{{
+>> res_dir = '~/results/catFR';
+>> exp = init_exp('Category Free Recall', 'subj', subj, 'recordingType', 'scalp', 'resDir', res_dir)
+
+exp = 
+
+       experiment: 'Category Free Recall'
+    recordingType: 'scalp'
+             subj: [1x46 struct]
+           resDir: '~/results/catFR'
+             file: '~/results/catFR/exp.mat'
+          useLock: 0
+       lastUpdate: ''
+}}}
+
+You can use {{{exp_disp}}} to print a summary of the experiment:
+
+{{{
+>> exp_disp(exp)
+Experiment name  Category Free Recall
+Filename         ~/results/catFR/exp.mat
+Last Saved       
+
+Subjects -                       [nSess x nChan]
+     1) LTP001                   [    4 x   129]
+     2) LTP002                   [    4 x   129]
+     3) LTP003                   [    4 x   129]
+     4) LTP004                   [    4 x   129]
+     5) LTP005                   [    4 x   129]
+     6) LTP006                   [    4 x   129]
+     7) LTP007                   [    4 x   129]
+     8) LTP008                   [    4 x   129]
+     9) LTP009                   [    1 x   129]
+
+...
+}}}
+
+
+Changes to the experiment object are saved using {{{update_exp}}}.  Before saving the new version of exp, a backup is made with the timestamp of the update in {{{[res_dir]/exp_bak}}}.  If you make a mistake, you can load a previous version, then use {{{exp = update_exp(exp);}}} to make it the current version. Run {{{update_exp}}} now to save a copy before we start making changes; note that you can optionally specify a log message, to make it easier to figure out which backup to load if you ever have to revert to an older version of the experiment object (these messages can be viewed using exp_log).
+
+{{{
+>> exp = update_exp(exp, 'imported catFR subjects and channels');
+update_exp: saved.
+}}}
+
+For this example, let's just work with the first three subjects.  To easily filter the subjects, we can use {{{filtersubj}}}.  You input a numeric array, and it will return the subjects whose string identifiers contain the numbers:
+
+{{{
+>> exp.subj = filtersubj(exp.subj, 1:3);
+>> exp_disp(exp)
+Experiment name  Category Free Recall
+Filename         ~/results/catFR/exp.mat
+Last Saved       07-29-10_0014
+
+Subjects -                       [nSess x nChan]
+     1) LTP001                   [    4 x   129]
+     2) LTP002                   [    4 x   129]
+     3) LTP003                   [    4 x   129]
+}}}
+
+We can now save the filtered experiment object using {{{update_exp}}}.  The previous version of exp is backed up, so we can always go back to that if we need to.
+
+{{{
+>> exp = update_exp(exp, 'removed all but first three subjects');
+update_exp: backed up in exp_07-29-10_0015.mat...saved..
+}}}
+
+=== Importing experiment data ===
+
+So far, we have imported information about each subject and their electrodes; next, we'll import information about the behavioral data, in the form of events structures.  Events structures have already been created for each session in this experiment, so we can just import them using {{{import_events}}}. ({{{create_events}}} and {{{post_process_subj}}} were used to create/update events and align them to EEG data.) The experiment structure stores data in the form of different types of "objects"; in this case, you will be creating an "events" ("ev" for short) object for each subject. Each object has a name, which can be used to reference the object later. Since we are importing data about all events in the experiment, we'll name these ev objects "all".
+
+Each object has a "file" field, which contains the path to a .mat file that contains the events structure. When you import events, you must specify a directory in which to save them. We'll save the events in a subdirectory of {{{res_dir}}} reserved for behavioral data.
+
+{{{
+>> events_dir = fullfile(exp.resDir, 'beh', 'all');
+>> exp.subj = apply_to_subj(exp.subj, @import_events, {'all', events_dir});
+LTP001
+concatenating session events...0 1 2 3 
+ev object "all" created.
+LTP002
+concatenating session events...0 1 2 3 
+ev object "all" created.
+LTP003
+concatenating session events...0 1 2 3 
+ev object "all" created.
+apply_to_subj: finished: 4.28 seconds.
+}}}
+
+Each subj object should now have an "ev" substructure.  Now events will show up in the experiment summary.
+
+{{{
+>> exp_disp(exp)
+Experiment name  Category Free Recall
+Filename         ~/results/catFR/exp.mat
+Last Saved       07-29-10_0015
+
+Subjects -                       [nSess x nChan]
+     1) LTP001                   [    4 x   129]
+     2) LTP002                   [    4 x   129]
+     3) LTP003                   [    4 x   129]
+
+Subject Events -                 [   events]
+     1) all                      [2738-2996]
+}}}
+
+The "Subject Events" section shows the "ev" objects and their names.  In this case, there is only one ev object named "all", but each subject can have many ev objects with different names.  For example, you might have one ev object for study events and another for recall events.  The output also shows the length of each events structure.  In this case, the three subjects have different numbers of events, so the range of lengths is displayed.
+
+=== Working with events ===
+
+To load one of the events structures, we first need to get the corresponding ev object.  To specify the location of the desired ev object, we give obj_type, obj_name pairs:
+
+{{{
+>> ev = getobj(exp, 'subj', 'LTP002', 'ev', 'all');
+}}}
+
+This should retrieve the ev object for LTP002 named "all".  The ev object is a structure with fields giving basic information about the number of events, and where the events structure is stored.  To load the events structure, use get_mat:
+{{{
+>> events = get_mat(ev)
+
+events = 
+
+1x2996 struct array with fields:
+    subject
+    session
+    trial
+    type
+    listtype
+    serialpos
+    category
+    resp
+    rt
+    item
+    itemno
+    recalled
+    intruded
+    finalrecalled
+    rectime
+    intrusion
+    mstime
+    msoffset
+    eegfile
+    eegoffset
+    artifactMS
+}}}
+
+The fields in events structures vary depending on the experiment, but all events structures should have "eegfile" and "eegoffset" fields. These fields contain information about where the EEG data corresponding to each behavioral event are stored. In the next section, we'll use this information to load EEG data. Also note the "type" field. This specifies whether each event is a study or recall event.
+
+=== Creating a voltage pattern ===
+
+In eeg_ana, electrophysiological data is stored in a general type of object called a "pattern".  A pattern is just a matrix with a particular ordering of dimensions.  Information about what the dimensions correspond to, what options were used to create the pattern, and where the pattern matrix is saved are stored in pattern or "pat" objects, which are added to the experiment object. (Note: pat objects are similar to "EEG" structures in EEGLAB and "data" structures in fieldtrip; in fact, there are functions for exporting pat objects to these formats: pat2eeglab and pat2fieldtrip).
+
+Since we have already imported channel data and events structures, we are ready to create a pattern.  There are many options for creating patterns, listed in {{{create_voltage_pattern}}}.  This function is a wrapper around the eeg_toolbox function gete_ms, so it supports many of the same options.  Options are specified by setting fields in a structure called "params".  Any options not specified in the params structure are set to default values.  First, we need to specify which events should be included in the pattern.
+
+{{{
+>> params = [];
+>> params.evname = 'all';
+>> params.eventFilter = 'strcmp(type, ''WORD'')';
+}}}
+
+These params tell {{{create_voltage_pattern}}} to use the events we added earlier under the name "all", and to only get voltage for the events that have type 'WORD', that is, word presentation events.
+
+To keep the patterns small for this example, we'll just look at four standard midline channels. To do this, we can specify a list of channel labels to include.
+
+{{{
+>> params.chanFilter = {'Fz', 'Cz', 'Pz', 'Oz'};
+}}}
+
+For the other parameters, we'll use the default values, which are listed in the help comments of {{{create_voltage_pattern}}}.  We also need to specify a name for the pattern (so we can access it later using getobj) and a directory in which to save the pattern matrices.  Finally, to run {{{create_voltage_pattern}}} on all subjects, we again use {{{apply_to_subj}}}.
+{{{
+>> pat_name = 'volt_midline_chans';
+>> pat_res_dir = fullfile(res_dir, 'eeg', pat_name);
+>> exp.subj = apply_to_subj(exp.subj, @create_voltage_pattern, {pat_name, params, pat_res_dir});
+LTP001
+creating "volt_midline_chans" pattern from "all" events using voltage_pattern...
+channels: 11 62 75 129 
+pattern saved in ~/results/catFR/eeg/volt_midline_chans/patterns/pattern_volt_midline_chans_LTP001.mat.
+LTP002
+creating "volt_midline_chans" pattern from "all" events using voltage_pattern...
+channels: 11 62 75 129 
+pattern saved in ~/results/catFR/eeg/volt_midline_chans/patterns/pattern_volt_midline_chans_LTP002.mat.
+LTP003
+creating "volt_midline_chans" pattern from "all" events using voltage_pattern...
+channels: 11 62 75 129 
+pattern saved in ~/results/catFR/eeg/volt_midline_chans/patterns/pattern_volt_midline_chans_LTP003.mat.
+apply_to_subj: finished: 45.90 seconds.
+}}}
+
+Note: If you have a parallel config set up, you can set "dist" to 1 or 2 when calling {{{apply_to_subj}}}; this will run the subjects in parallel using a batch job or a parfor loop, respectively.  This can be useful if you are creating large patterns that take a long time to create, or if you have a large number of subjects.
+
+Running {{{exp_disp}}} again, you should see the added patterns:
+
+{{{
+>> exp_disp(exp)
+Experiment name  Category Free Recall
+Filename         ~/results/catFR/exp.mat
+Last Saved       07-29-10_0015
+
+Subjects -                       [nSess x nChan]
+     1) LTP001                   [    4 x   129]
+     2) LTP002                   [    4 x   129]
+     3) LTP003                   [    4 x   129]
+
+Subject Events -                 [   events]
+     1) all                      [2738-2996]
+
+Subject Patterns -               [events x  chans x   time x   freq]
+     1) volt_midline_chans       [  1152 x      4 x   1100 x      1]
+}}}
+
+Note that the number of events in the pattern is different than the number of events in the source events structures.  This is because only the word presentation events were included.  Patterns have a fourth "frequency" dimension that is used in oscillatory power patterns, but is always of length one for voltage patterns, since they don't have a frequency dimension.
+
+=== Working with patterns ===
+
+Like with the events structures, we can access the pattern matrix using {{{getobj}}} and {{{get_mat}}}:
+
+{{{
+>> pat = getobj(exp, 'subj', 'LTP002', 'pat', 'volt_midline_chans');
+>> pattern = get_mat(pat);
+}}}
+
+=== Plotting ERPs ===
+
+We can make ERP plots using {{{pat_erp}}}. To plot the averages over subsets of events, we can specify a field of the events structure. In this experiment, there were three different categories of stimuli: celebrities, landmarks, and objects. If we specify the "category" field in the event_bins option, {{{pat_erp}}} will plot the average voltage for each unique category code. One figure will be created for each channel. The figures will be printed to a graphics file (default format is EPS), and the paths to the printed figures are saved in a "fig" object, which is attached to each "pat" object.
+
+To create ERP plots for each subject's voltage pattern, we use {{{apply_to_pat}}}. It works similarly to {{{apply_to_subj}}}, except we specify the name of the pattern object to apply the function to.
+
+{{{
+>> params = struct('event_bins', 'category');
+>> exp.subj = apply_to_pat(exp.subj, 'volt_midline_chans', @pat_erp, {'category_erp', params})
+LTP001
+modifying pattern "volt_midline_chans"...updated.
+making 4 ERP plots from pattern volt_midline_chans...
+1 2 3 4 
+LTP002
+modifying pattern "volt_midline_chans"...updated.
+making 4 ERP plots from pattern volt_midline_chans...
+1 2 3 4 
+LTP003
+modifying pattern "volt_midline_chans"...updated.
+making 4 ERP plots from pattern volt_midline_chans...
+1 2 3 4 
+apply_to_subj: finished: 63.12 seconds..
+}}}
+
+Don't be alarmed by the messages saying that the pattern is being modified; this modification is temporary, and doesn't change the patterns on disk or on the output experiment object.  Each pattern object should now have a fig object name "category_erp" attached to it, containing paths to one figure for each channel:
+
+{{{
+>> fig = getobj(exp, 'subj', 'LTP001', 'pat', 'volt_midline_chans', 'fig', 'category_erp')
+
+fig = 
+
+      name: 'category_erp'
+      file: {1x4 cell}
+    source: 'volt_midline_chans'
+>> [fig.file]'
+
+ans = 
+
+    './figs/volt_midline_chans_category_erp_LTP001_e1c1.eps'
+    './figs/volt_midline_chans_category_erp_LTP001_e1c2.eps'
+    './figs/volt_midline_chans_category_erp_LTP001_e1c3.eps'
+    './figs/volt_midline_chans_category_erp_LTP001_e1c4.eps'
+    './figs/volt_midline_chans_category_erp_LTP001_e1c5.eps'
+}}}
+
+We can use the information in these fig objects to create a PDF report showing each subject's ERPs. (section under construction; in the meantime, see {{{create_pat_report}}} and {{{create_report}}}.)
