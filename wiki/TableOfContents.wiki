@@ -1,4 +1,4 @@
-  * [Main]
+  * [Main Welcome Page]
   * [Installation]
   * [Tutorials]
     * [ImportTutorial Importing Data]
