@@ -1,0 +1,5 @@
+#summary EEG Analysis Toolbox manual introduction
+
+= EEG Analysis Toolbox manual =
+
+This manual will give overviews of the different components of the toolbox.  See the [Tutorials] page for instructions on carrying out common tasks.
