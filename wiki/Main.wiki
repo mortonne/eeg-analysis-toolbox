@@ -1,17 +1,15 @@
-= eeg_ana toolbox =
+= Welcome to the EEG Analysis Toolbox Wiki =
 
 == Introduction ==
-eeg_ana is an addition to the [[InternalWiki/eeg_toolbox|eeg_toolbox]], with many features similar to the Princeton Multi-Voxel Pattern Analysis (MVPA) Toolbox.  It is designed to facilitate exploratory analysis of EEG data, and provides simple ways of harnessing the power of a cluster or a multi-core machine.  It also contains a number of functions that are useful for preparing behavioral experiments for analysis using [[InternalWiki/beh_toolbox|beh_toolbox]].  Information about each experiment is stored in a standard structure, so it is straightforward to design an analysis that can be run on multiple experiments.  eeg_ana uses the existing standard of the events structure that is used by the eeg_toolbox, and therefore is compatible with most eeg_toolbox functions.  It also uses a new standard for storing intermediate EEG data, which is detailed in the [[InternalWiki/eeg_ana_patterns|Patterns]] page.
-
-Besides making it easier to run analyses, the toolbox also provides a framework in which to store results. Information both about how an experiment was run and what analyses have been done is stored in a central structure.  This makes it straightforward to generate PDF reports which can contain figures for many subjects, channels, frequencies, etc.
+The EEG Analysis Toolbox (eeg_ana) is a front-end for the UPenn EEG Toolbox (eeg_toolbox). It supports both univariate analysis and multivariate pattern analysis, and can process large amounts of data in parallel. It also includes advanced plotting functions and the ability to generate summary PDF reports.
 
 eeg_ana supports limited interfacing with other MATLAB-based toolboxes:
 || Toolbox     || Common Uses ||
-|| beh_toolbox || Analysis of event sequences; can use FRdata for export and fr_data2events with update_struct to import back to eeg_ana. ||
-|| eeg_toolbox || The core of eeg_ana, used to load voltage and compute spectral power using wavelets. Support may be expanded in the future to include other types of electrophysiology data (e.g. P-episode) supported in eeg_toolbox. ||
-|| EEGLAB      || eeg_ana can export to EEGLAB format (see pat2eeglab). Useful for visualizing data and running ICA. ||
-|| Fieldtrip   || eeg_ana can export to Fieldtrip format (see pat2fieldtrip). Provides advanced statistics, including a permutation-based clustering statistic (planned to be supported in a future version of eeg_ana). ||
-|| MVPA        || Used for pattern classification; eeg_ana supports all MVPA classifiers and performance metrics. ||
+|| beh_toolbox || Advanced analysis of memory experiments ||
+|| eeg_toolbox || Wavelet analysis ||
+|| EEGLAB      || Useful for visualizing data and running ICA ||
+|| Fieldtrip   || Provides advanced statistics ||
+|| MVPA        || Provides support for pattern classification ||
 
 The eeg_ana project lives on [[InternalWiki/SVN|SVN]].  The latest stable version is 0.3 ({{{/home/svn/eeg/eeg_ana/branches/0.3}}}); you can also use the trunk version ({{{/home/svn/eeg/eeg_ana/trunk}}}), which changes quickly.  Note that the toolbox currently has a very small user base, so I often don't bother with backwards compatibility when developing the trunk version.  Updates to the version branch will only include bugfixes, not new features, so it will remain stable.
 
@@ -20,23 +18,6 @@ eeg_ana requires the "unstable" branch of eeg_toolbox ({{{svn+ssh://rhino.psych.
 A good way to get acquainted with the basic features of the toolbox is to run through the  [[InternalWiki/eeg_ana_basic_tutorial|Introductory Tutorial]].
 
 The primary author of the eeg_ana toolbox is [[mailto:neal.w.morton@vanderbilt.edu|Neal Morton]].  Feedback and contributions are greatly appreciated!  See the [[InternalWiki/eeg_ana_toolbox/Development|Development]] page for discussion on continued development.
-
-== Plot Examples ==
-
-The first three examples show variations on plotting voltage or power over the whole scalp. These all use EEGLAB functions, which require electrode locations files.  The headplots also require a spline file.  The necessary files for our 128-channel HCGSN caps are included in the eeg_ana SVN project.
-
-{{attachment:topoplot.jpg}}
-{{attachment:headplot.jpg}}
-{{attachment:erptopo.png}}
-
-The plot on the left is an example of an ERP image.  This shows, for electrode Fz, a color map for voltage on every trial, plus an average over all trials at the bottom.  The trials are sorted by the artifactMS field of the events structure, which eeg_toolbox adds to events when they are aligned.  It gives the time in milliseconds on each trial when a blink is first detected. Here, you can see voltage increase immediately after the black line, showing voltage increases due to blinks.
-
-The right plot shows average power for one electrode.
-
-{{attachment:erpimage.png}}
-{{attachment:spectrogram.jpg}}
-
-All of these plots can be embedded into PDF reports with many channels and subjects in a convenient table. Example from trackball data, showing ERPs for various eye movements: [[attachment:eog_report.pdf]]
 
 == The exp structure ==
 
@@ -55,10 +36,9 @@ exp
    .subj               Vector structure, with one structure for each subject
        .id             Identifier of this subject
        .dir            Path to the directory containing this subject's raw data
-       .chan           Vector structure that holds information about this subject's electrodes (if applicable)
+       .chan           Vector structure that holds information about this subject's electrodes
            .number     Number identifier of this channel
            .label      String label for this channel; each channel should have a unique label
-           A feature in development will give the option of adding additional fields with information from the talairach database, for use with iEEG recordings.
        .sess           Vector structure with information about each session run
            .number     Number identifier
            .dir        Path to the directory holding raw data
