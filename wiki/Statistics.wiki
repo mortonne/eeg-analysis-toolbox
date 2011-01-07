@@ -1,0 +1,11 @@
+= Statistics =
+
+_Statistics objects_ generally contain information about statistical tests or pattern classification, but they can store information about any analysis.  They simply have a name and a reference to a MAT-file that contains the details about the analysis.
+
+== Statistical maps ==
+
+Univariate statistical tests produce statistical maps, or _statmaps_.  A separate statistical test is run for each channel, time, and frequency in a pattern to produce a map of significance values.  Statmaps may be created by {{{pattern_statmap}}}, and significance is plotted by many of the plotting functions in the toolbox.  Some tests, such as multi-way ANOVAs, return multiple significance values.  In this case, different effects may be named by a variable called {{{names}}} saved with the stat object.
+
+== Using R for advanced statistics ==
+
+{{{stat_R}}} is a general wrapper for running statistical tests in R, a free program that includes support for many advanced statistical tests.  There are a few R scripts included in the toolbox, such as {{{rmaov1.R}}}, which can be used as templates to write new tests. Currently the interface between MATLAB and R is rather primitive, however, so making statmaps using R can be slow.
