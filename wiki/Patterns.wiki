@@ -1,0 +1,47 @@
+= Patterns =
+
+Patterns consist of two parts: a "pat" object, which contains metadata about the pattern, including a name that identifies the pattern, and information about dimensions; and a pattern matrix, which contains the actual data. The pat object includes a reference to the pattern, which is normally stored on the hard drive, but may also be stored in a subfield called "mat."
+
+|| Field || Type || Description ||
+|| name || string || unique identifier for the pattern ||
+|| file || string || path to a MAT-file containing the pattern matrix ||
+|| source || string || identifier of the subject these data were collected from ||
+|| params || struct || (optional) structure containing the options used to create the pattern ||
+|| dim || struct || structure containing information about each dimension of the pattern (see below) ||
+|| modified || logical || (optional) indicates whether the pattern has been modified since it was last saved ||
+|| mat || numeric || (optional) when the pattern is stored in the workspace, it is placed here ||
+
+== Dimensions ==
+
+Dimensions of the pattern matrix must have the following order: events X channels X time X frequency. Any of these dimensions may be singleton, but they must be in the standard order. Metadata about each dimension is stored in pat.dim. Dimensions have a similar format to pat objects; they include a structure which contains basic information, and a larger structure on the hard drive which contains detailed information. The dimensions are stored in pat.dim.ev, pat.dim.chan, pat.dim.time, and pat.dim.freq. The standard fields for any dimension are:
+
+|| Field || Type || Description ||
+|| type || string || 'ev', 'chan', 'time', or 'freq' ||
+|| file || string || path to a MAT-file containing the full dimension structure ||
+|| len || numeric || integer giving the length of the dimension ||
+|| modified || logical || (optional) indicates whether the dimension has been modified since it was last saved ||
+|| mat || numeric || (optional) when the dimension structure is stored in the workspace, it is placed here ||
+
+=== Events ===
+The events dimension contains information about what was happening in the experiment at a given time. It has no required fields, but can have any number of fields containing information about the experiment, such as trial, stimulus, etc.
+
+=== Channels ===
+This dimension generally contains information about different electrodes. There are two required fields:
+
+|| Field || Type || Description ||
+|| number || numeric || unique integer identifying the channel ||
+|| label || string || unique string identifier for the channel ||
+
+=== Time ===
+This dimension describes times in milliseconds relative to the start of a given event. There are three required fields:
+
+|| Field || Type || Description ||
+|| range || numeric || 1 X 2 array giving the start and end times of this time bin (start and end may be the same) ||
+|| avg || numeric || scalar giving the center of this time bin ||
+|| label || string || label for this time bin ||
+
+=== Frequency ===
+This dimension is used in patterns containing power values, but not for voltage patterns (for voltage patterns, init_freq() can be used to generate an empty frequency dimension). The required fields are the same as for time, but the values represent frequencies in Hz.
+
+
+
