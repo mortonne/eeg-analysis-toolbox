@@ -1,14 +1,5 @@
 = Welcome to the EEG Analysis Toolbox Wiki =
 
-== Introduction ==
-The EEG Analysis Toolbox (eeg_ana) is a front-end for the UPenn EEG Toolbox (eeg_toolbox). It supports both univariate analysis and multivariate pattern analysis, and can process large amounts of data in parallel. It also includes advanced plotting functions and the ability to generate summary PDF reports.
+This wiki contains the latest documentation for the EEG Analysis Toolbox.
 
 See the [Installation] page for instructions on installing the toolbox and dependencies, [Tutorials] to get started with common tasks, and the [Manual] for references about data structures and development.
-
-The eeg_ana project lives on [[InternalWiki/SVN|SVN]].  The latest stable version is 0.3 ({{{/home/svn/eeg/eeg_ana/branches/0.3}}}); you can also use the trunk version ({{{/home/svn/eeg/eeg_ana/trunk}}}), which changes quickly.  Note that the toolbox currently has a very small user base, so I often don't bother with backwards compatibility when developing the trunk version.  Updates to the version branch will only include bugfixes, not new features, so it will remain stable.
-
-eeg_ana requires the "unstable" branch of eeg_toolbox ({{{svn+ssh://rhino.psych.upenn.edu/home/svn/eeg/eeg_toolbox/branches/unstable}}}), and uses some beh_toolbox functions.
-
-A good way to get acquainted with the basic features of the toolbox is to run through the  [[InternalWiki/eeg_ana_basic_tutorial|Introductory Tutorial]].
-
-The primary author of the eeg_ana toolbox is [[mailto:neal.w.morton@vanderbilt.edu|Neal Morton]].  Feedback and contributions are greatly appreciated!  See the [[InternalWiki/eeg_ana_toolbox/Development|Development]] page for discussion on continued development.
