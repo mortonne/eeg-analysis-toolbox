@@ -1,5 +1,5 @@
 = Tutorials =
-  * [ImportTutorial Importing data]
-  * [ReportTutorial Creating reports]
-  * [UnivariateTutorial Univariate statistics]
-  * [PatclassTutorial Pattern classification]
+
+See the [ImportTutorial importing data] tutorial to read in raw data or import from another toolbox.  The [ReportTutorial creating reports] tutorial gives information on creating PDF reports that can be useful in exploratory analysis.
+
+The [UnivariateTutorial univariate statistics] tutorial gives information about creating statistical maps of EEG data, while the [PatclassTutorial pattern classification] tutorial introduces multivariate pattern analysis.
