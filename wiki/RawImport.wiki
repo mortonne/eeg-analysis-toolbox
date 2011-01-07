@@ -1,0 +1,3 @@
+= Importing Raw Data =
+
+Raw continuous data may be imported from any filetype that is supported by eeg_toolbox (see {{{eeg_toolbox/core/io}}} for data conversion scripts).  Once the data are in a standard format, they must be aligned to the events in the experiment.  See {{{eeg_toolbox/core/align}}} for functions to help with alignment.  EGI data may be prepared for analysis using {{{prep_egi_data}}}, which converts the continuous data, aligns it, and average rereferences.
