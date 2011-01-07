@@ -1,5 +1,3 @@
-#sidebar TableOfContents
-
 = eeg_ana toolbox =
 
 == Introduction ==
