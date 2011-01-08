@@ -1,0 +1,17 @@
+= Pattern Classification =
+
+== Writing extensions ==
+
+=== Classifiers ===
+
+See mvpa/core/template/train_template.m, test_template.m, and perfmet_template.m for examples of how to write new training, testing, and performance metric functions, respectively.
+
+=== Feature selection ===
+
+Feature selection functions are applied to the training set before learning on each cross-validation iteration. They output a p-value which is thresholded at a given alpha value to determine which features will be used for training. Feature selection functions must have the form:
+
+{{{
+p = my_feature_select_function(train_pattern, train_targets, ...)
+}}}
+
+Where {{{train_pattern}}} is an (observations) X (features) matrix, {{{train_targets}}} is a (observations) X (class) matrix (see MVPA documentation for details), and {{{p}}} is a vector giving the p-value for each variable. You may also use additional constant inputs. Note that, at the point that the function is applied, all dimensions besides observations (events) have been combined. So, for example, if you have voltage values at 129 electrodes and 10 time points measured at 100 observations, you will have a 100 X 1290 {{{train_pattern}}}.
