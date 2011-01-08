@@ -9,3 +9,7 @@ Univariate statistical tests produce statistical maps, or _statmaps_.  A separat
 == Using R for advanced statistics ==
 
 {{{stat_R}}} is a general wrapper for running statistical tests in R, a free program that includes support for many advanced statistical tests.  There are a few R scripts included in the toolbox, such as {{{rmaov1.R}}}, which can be used as templates to write new tests. Currently the interface between MATLAB and R is rather primitive, however, so making statmaps using R can be slow.
+
+== Pattern classification ==
+
+Pattern classification results are saved in standard _res_ structures.  These results structures follow the format of MVPA results structures, except the _iterations_ substruct is 4-D, corresponding to the dimensions of the pattern that was classified.
