@@ -5,6 +5,7 @@
    * [ReportTutorial Creating Reports]
    * [UnivariateTutorial Univariate Analysis]
    * [PatclassTutorial Pattern Classification]
+   * [EMCP Eye Artifact Correction]
  * [Manual]
    * [DataStructures Data Structures]
      * [Experiments]
