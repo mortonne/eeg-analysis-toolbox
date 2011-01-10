@@ -1,6 +1,6 @@
 = Statistical Maps =
 
-By running a univariate test such as a _t_-test or ANOVA on every sample in a pattern, one can create a statistical map, which can then be plotted.
+By running a univariate test such as a _t_-test or ANOVA on every sample in a pattern, one can create a statistical map to determine which time samples/electrodes/frequencies show a given effect.
 
 == Creation ==
 
