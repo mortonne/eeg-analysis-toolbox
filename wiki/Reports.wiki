@@ -1,0 +1,11 @@
+= Reports =
+
+Figures created using one of the {{{pat_*}}} plotting functions may be placed in a PDF report.  There are various functions for making different types of reports.  In each case, information about dimensions of the pattern is automatically used to label the rows and columns of the report.  Report generation requires that LaTeX is installed.
+
+== Pattern reports ==
+
+A simple way to make a report is to use plots from a single pattern.  For example, you might want to have a different electrode on each row, and a different type of ERP on each column.  The pattern could be from an individual subject, or a grand average (see {{{grand_average}}}).  {{{pat_report}}} may be used to create this type of report, which may include multiple figure objects.
+
+== Reports with multiple subjects ==
+
+A report with plots from multiple subjects can be created using {{{pat_report_all_subj}}}.
