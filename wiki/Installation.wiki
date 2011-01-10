@@ -4,7 +4,7 @@
 
 The toolbox uses code projects developed by the Kahana Computational Memory Lab at UPenn.  Since these projects are not updated regularly, we plan on setting up public read-only access to the necessary SVN projects, eeg_toolbox (unstable branch) and beh_toolbox.
 
-Pattern classification requires the [http://code.google.com/p/princeton-mvpa-toolbox/ Princeton MVPA toolbox].  To generate PDF reports, you must have LaTeX installed.
+Pattern classification requires the [http://code.google.com/p/princeton-mvpa-toolbox/ Princeton MVPA toolbox].  To generate PDF reports, you must have a distribution of LaTeX installed and have latex, pdflatex and dvipdf on your path.
 
 == Setup ==
 
