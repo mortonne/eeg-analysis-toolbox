@@ -10,4 +10,4 @@ Other functions, which begin with {{{pat_}}}, such as {{{pat_erp}}}, can make ma
 
 {{{pat_erp}}} is generally used for plotting event-related potentials.  However, it can also be used to plot power patterns; in this case, a plot is made for each electrode and frequency.  {{{pat_erp_image}}} is useful for examining the EEG for individual trials, as well as the average over trials.  {{{pat_tfr}}} is designed to plot time-frequency representations such as power values, and can make spectrograms or frequency plots depending whether there are multiple time bins in the pattern.
 
-There are two general ways to plot data in a topographic format.  {{{pat_topoplot}}} plots individual time bins, either on a cartoon topographic map, or a realistic 3D head model.  {{{pat_plottopo}}}, on the other hand, plots whole ERPs, which are arranged in a topographic layout.
+There are two general ways to plot data in a topographic format.  {{{pat_topoplot}}} uses a color map to plot individual time bins, either on a cartoon topographic map, or a realistic 3D head model.  {{{pat_plottopo}}}, on the other hand, plots whole ERPs, which are arranged in a topographic layout.
