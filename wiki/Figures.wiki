@@ -1,0 +1,13 @@
+= Figures =
+
+== Types of plotting functions ==
+
+There are various plotting functions (e.g. {{{plot_erp}}}, {{{plot_tfr}}}) that take in numeric values, and do not require data structures such as patterns.  These functions are designed to be easy to use even with other toolboxes.  Each of the {{{plot_*}}} functions only draws one figure, and does not save it.
+
+Other functions, which begin with {{{pat_}}}, such as {{{pat_erp}}}, can make many plots.  For example, {{{pat_erp}}} will generally make one plot for each electrode.  Each of these plots is printed to hard drive, and the paths to each of the figures is saved in a _figure object_.  Figure objects can be used to make [Reports reports].
+
+== Uses for different plotting functions ==
+
+{{{pat_erp}}} is generally used for plotting event-related potentials.  However, it can also be used to plot power patterns; in this case, a plot is made for each electrode and frequency.  {{{pat_erp_image}}} is useful for examining the EEG for individual trials, as well as the average over trials.  {{{pat_tfr}}} is designed to plot time-frequency representations such as power values, and can make spectrograms or frequency plots depending whether there are multiple time bins in the pattern.
+
+There are two general ways to plot data in a topographic format.  {{{pat_topoplot}}} plots individual time bins, either on a cartoon topographic map, or a realistic 3D head model.  {{{pat_plottopo}}}, on the other hand, plots whole ERPs, which are arranged in a topographic layout.
