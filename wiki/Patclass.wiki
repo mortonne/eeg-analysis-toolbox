@@ -8,6 +8,18 @@ Any pattern object can be classified.  Each element of the associated events str
 
 Usually the ability of a pattern classifier to generalize to a new dataset is assessed using a cross-validation or leave-one-out method.  For example, the classifier might be trained on all but one block of an experiment, then tested on the remaining block.  This process is repeated so that each block is tested, and then performance is averaged over the cross-validation iterations.  Cross-validation is accomplished using {{{classify_pat}}}.  Iterations can be defined using the events structure through the _selector_ input.
 
+== Testing on a different set of events ==
+
+In some cases you might instead want to train on one set of events, and test on another.  In this case where cross-validation is not necessary, you should use {{{classify_pat2pat}}}.  It allows you to train the classifier on one pattern and test on another.
+
+== Classifiers ==
+
+The toolbox supports all of the classifiers available in the [http://code.google.com/p/princeton-mvpa-toolbox/ Princeton MVPA toolbox].
+
+== Performance metrics ==
+
+The toolbox supports all of the performance metrics available in the [http://code.google.com/p/princeton-mvpa-toolbox/ Princeton MVPA toolbox].
+
 == Writing extensions ==
 
 === Classifiers ===
