@@ -1,5 +1,13 @@
 = Pattern Classification =
 
+== Preparing data ==
+
+Any pattern object can be classified.  Each element of the associated events structure must contain enough information to determine which class each event belongs to.  Also, if you're using cross-validation, the events structure must have a field or fields that contain information for splitting up the data for cross-validation iterations.
+
+== Cross-validation ==
+
+Usually the ability of a pattern classifier to generalize to a new dataset is assessed using a cross-validation or leave-one-out method.  For example, the classifier might be trained on all but one block of an experiment, then tested on the remaining block.  This process is repeated so that each block is tested, and then performance is averaged over the cross-validation iterations.  Cross-validation is accomplished using {{{classify_pat}}}.  Iterations can be defined using the events structure through the _selector_ input.
+
 == Writing extensions ==
 
 === Classifiers ===
