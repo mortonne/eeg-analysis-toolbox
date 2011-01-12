@@ -1,5 +1,7 @@
 = Patterns =
 
+Here is the specification for patterns.  Also see the downloads page for an example of a pattern that meets the specifications.
+
 Patterns consist of two parts: a "pat" object, which contains metadata about the pattern, including a name that identifies the pattern, and information about dimensions; and a pattern matrix, which contains the actual data. The pat object includes a reference to the pattern, which is normally stored on the hard drive, but may also be stored in a subfield called "mat."
 
 || Field || Type || Description ||
@@ -42,6 +44,4 @@ This dimension describes times in milliseconds relative to the start of a given 
 
 === Frequency ===
 This dimension is used in patterns containing power values, but not for voltage patterns (for voltage patterns, init_freq() can be used to generate an empty frequency dimension). The required fields are the same as for time, but the values represent frequencies in Hz.
-
-
 
