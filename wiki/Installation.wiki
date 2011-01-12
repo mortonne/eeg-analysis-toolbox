@@ -6,9 +6,11 @@ The toolbox uses code projects developed by the Kahana Computational Memory Lab 
 
 Pattern classification requires the [http://code.google.com/p/princeton-mvpa-toolbox/ Princeton MVPA toolbox].  To generate PDF reports, you must have a distribution of LaTeX installed and have latex, pdflatex and dvipdf on your path.
 
+For now, a version of all the dependencies (except LaTeX) are included with the download.
+
 == Setup ==
 
-Download the toolbox, open MATLAB, and change into the toolbox directory.  Then enter
+Download the toolbox, open MATLAB, and change into the main toolbox directory.  Then enter
 
 {{{
 init_eeg_ana
