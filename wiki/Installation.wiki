@@ -8,8 +8,10 @@ Pattern classification requires the [http://code.google.com/p/princeton-mvpa-too
 
 == Setup ==
 
-Download the toolbox and used {{{genpath}}} to add all subdirectories to your path:
+Download the toolbox, open MATLAB, and change into the toolbox directory.  Then enter
 
 {{{
-addpath(genpath('path_to_eeg_ana'))
+init_eeg_ana
 }}}
+
+to add the necessary directories to your path.
