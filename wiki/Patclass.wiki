@@ -18,7 +18,7 @@ The toolbox supports all of the classifiers available in the [http://code.google
 
 == Performance metrics ==
 
-The toolbox supports all of the performance metrics available in the [http://code.google.com/p/princeton-mvpa-toolbox/ Princeton MVPA toolbox].  After classification is complete, you can convert the performance results into a new pattern.  This then allows you to plot classifier performance using any plotting function in the toolbox.
+The toolbox supports all of the performance metrics available in the [http://code.google.com/p/princeton-mvpa-toolbox/ Princeton MVPA toolbox].  After classification is complete, you can convert the performance results into a new pattern using {{{create_perf_pattern}}}.  This then allows you to plot classifier performance using any plotting function in the toolbox.
 
 == Writing extensions ==
 
