@@ -38,8 +38,8 @@ Information about the subjects who have run in the experiment is stored in a vec
 
 || Field || Type || Description ||
 || id || string || identifier of the subject ||
-|| dir || string || path to the directory where raw data is saved ||
-|| sess || struct || vector structure with "number" and "dir" fields for each session ||
+|| dir || string || (optional) path to the directory where raw data is saved ||
+|| sess || struct || (optional) vector structure with "number" and "dir" fields for each session ||
 || chan || struct || (optional) vector structure containing electrode information ||
 
-Generally, subj structs can be made automatically using {{{get_sessdirs}}}, and electrode information can be imported using {{{import_channels}}}.
+Generally, subj structs can be made automatically using {{{get_sessdirs}}}, and electrode information can be imported using {{{import_channels}}}.  The _dir_, _sess_, and _chan_ fields are necessary only for importing raw data; if you're importing segmented data from another toolbox like EEGLAB, these fields aren't necessary.
