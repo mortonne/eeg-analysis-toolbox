@@ -1,3 +1,25 @@
 = Importing Raw Data =
 
+== Subjects ==
+
+Information about subjects is stored in an [Experiment experiment object].  If you're using the toolbox to import raw data, you will need to import information about where the data are stored, probably using {{{get_sessdirs}}}:
+
+{{{
+data_dir = '/path/to/main/data/directory';
+subj_str = 'every_subject_id_starts_with_this*';
+subj = get_sessdirs(data_dir, subj_str);
+}}}
+
+{{{get_sessdirs}}} assumes that there is a directory with sub-directories named for the subjects in the experiment.  {{{subj_str}}} is a pattern (may contain stars to indicate a wildcard) that matches the name of every subject directory to import.
+
+Once you have a subjects vector, you can use {{{init_exp}}} to create an experiment object.
+
+== Events ==
+
+Information about the [Events events] in an experiment should be saved in a vector structure in each session directory.  Then {{{import_events}}} can be used to add references to the events structures to the experiment object.
+
+== EEG Data ==
+
+=== Continuous ===
+
 Raw continuous data may be imported from any filetype that is supported by eeg_toolbox (see {{{eeg_toolbox/core/io}}} for data conversion scripts).  Once the data are in a standard format, they must be aligned to the events in the experiment.  See {{{eeg_toolbox/core/align}}} for functions to help with alignment.  EGI data may be prepared for analysis using {{{prep_egi_data}}}, which converts the continuous data, aligns it, and average rereferences.
