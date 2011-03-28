@@ -2,7 +2,7 @@
 
 == Creation ==
 
-Patterns hold segmented EEG data, either raw traces or time-frequency decompositions.  A pattern can be created using {{{create_voltage_pattern}}} or {{{create_power_pattern}}}.  These functions support some preprocessing options, included frequency-domain filtering (e.g. notch filtering to remove 60 Hz noise).  Alternatively, an EEGLAB or FieldTrip segmented data structure could be converted to pattern format according to the pattern specification listed below.
+Patterns hold segmented EEG data, either raw traces or time-frequency decompositions.  A pattern can be created using `create_voltage_pattern` or {{{create_power_pattern}}}.  These functions support some preprocessing options, included frequency-domain filtering (e.g. notch filtering to remove 60 Hz noise).  Alternatively, an EEGLAB or !FieldTrip segmented data structure could be converted to pattern format according to the pattern specification listed below.
 
 == Operations ==
 
