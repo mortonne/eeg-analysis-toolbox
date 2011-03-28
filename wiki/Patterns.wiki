@@ -1,5 +1,47 @@
 = Patterns =
 
+== Creation ==
+
+Patterns hold segmented EEG data, either raw traces or time-frequency decompositions.  A pattern can be created using {{{create_voltage_pattern}}} or {{{create_power_pattern}}}.  These functions support some preprocessing options, included frequency-domain filtering (e.g. notch filtering to remove 60 Hz noise).  Alternatively, an EEGLAB or FieldTrip segmented data structure could be converted to pattern format according to the pattern specification listed below.
+
+== Operations ==
+
+A number of functions transform existing patterns.  Type {{{help patterns/operations}}} to see a list of the functions available and a brief description of what they do.
+
+All pattern operation functions support a number of save options, including renaming or overwriting existing patterns.  They can also be used to return patterns to the workspace rather than saving them to disk.  If no save options are specified, patterns will be returned to the workspace.  When storing patterns in the workspace, take care when processing multiple subjects and/or large patterns; if you're getting out of memory errors, specify either the "save_as" option to save each subject's pattern to a new file or set "overwrite" to true to overwrite the input pattern.
+
+=== Common Tasks ===
+
+{{{bin_pattern}}} can be used to accomplish averaging across events to calculate event-related potentials (ERPs) and can also average across any other dimension.  {{{grand_average}}} can be used to average across subjects.  {{{filter_pattern}}} is used to return a subset of a pattern, for example a set of events matching a given condition or a specific set of channels.
+
+There are a number of functions for combining patterns by concatenating them.  {{{cat_patterns}}} is a generic function that can be used on any vector of pattern objects.  {{{cat_subj_patterns}}} can concatenate multiple patterns within a subject.  {{{cat_all_subj_patterns}}} concatenates a pattern over multiple subjects.
+
+=== Batch Processing ===
+
+As with all toolbox operations, pattern operations can be run on all subjects in batch.  Use {{{apply_to_pat}}} to do this.  For example:
+
+{{{
+exp.subj = apply_to_pat(exp.subj, 'my_pat_name', @bin_pattern, {'eventbins', 'overall'});
+}}}
+
+Will run {{{bin_pattern}}} on each subject, with the pattern as the first input, and {{{'eventbins'}}} and  {{{'overall'}}} as additional inputs.  This is equivalent to running:
+
+{{{
+for i = 1:length(exp.subj)
+  pat = getobj(exp.subj(i), 'pat', 'my_pat_name');
+  pat = bin_pattern(pat, 'eventbins', 'overall');
+  exp.subj(i) = setobj(exp.subj(i), 'pat', pat);
+end
+}}}
+
+However, using {{{apply_to_pat}}}, rather than writing your own {{{for}}} loop, allows you to use the Mathworks distributed computing toolbox to process each subject in parallel.  Set the "dist" flag in {{{apply_to_pat}}} to 1 (a separate task is submitted for each subject) or 2 (uses a {{{parfor}}} loop; must open a matlabpool first) to run subjects in parallel.
+
+=== Writing Your Own Operations ===
+
+All toolbox operations function call {{{mod_pattern}}} to handle saving out pattern matrices and associated dimensions information.  Your function should contain a subfunction that is input to {{{mod_pattern}}} as a function handle.  {{{mod_pattern}}} will run the function and handle the saving/renaming of the output pattern.  See {{{bin_pattern}}} for an example of how to write an operation function.
+
+== Specification ==
+
 Here is the specification for patterns.  Also see the downloads page for an example of a pattern that meets the specifications.
 
 Patterns consist of two parts: a "pat" object, which contains metadata about the pattern, including a name that identifies the pattern, and information about dimensions; and a pattern matrix, which contains the actual data. The pat object includes a reference to the pattern, which is normally stored on the hard drive, but may also be stored in a subfield called "mat."
@@ -13,7 +55,7 @@ Patterns consist of two parts: a "pat" object, which contains metadata about the
 || modified || logical || (optional) indicates whether the pattern has been modified since it was last saved ||
 || mat || numeric || (optional) when the pattern is stored in the workspace, it is placed here ||
 
-== Dimensions ==
+=== Dimensions ===
 
 Dimensions of the pattern matrix must have the following order: events X channels X time X frequency. Any of these dimensions may be singleton, but they must be in the standard order. Metadata about each dimension is stored in pat.dim. Dimensions have a similar format to pat objects; they include a structure which contains basic information, and a larger structure on the hard drive which contains detailed information. The dimensions are stored in pat.dim.ev, pat.dim.chan, pat.dim.time, and pat.dim.freq. The standard fields for any dimension are:
 
@@ -24,17 +66,17 @@ Dimensions of the pattern matrix must have the following order: events X channel
 || modified || logical || (optional) indicates whether the dimension has been modified since it was last saved ||
 || mat || numeric || (optional) when the dimension structure is stored in the workspace, it is placed here ||
 
-=== Events ===
+==== Events ====
 The events dimension contains information about what was happening in the experiment at a given time. It has no required fields, but can have any number of fields containing information about the experiment, such as trial, stimulus, etc.
 
-=== Channels ===
+==== Channels ====
 This dimension generally contains information about different electrodes. There are two required fields:
 
 || Field || Type || Description ||
 || number || numeric || unique integer identifying the channel ||
 || label || string || unique string identifier for the channel ||
 
-=== Time ===
+==== Time ====
 This dimension describes times in milliseconds relative to the start of a given event. There are three required fields:
 
 || Field || Type || Description ||
@@ -42,6 +84,5 @@ This dimension describes times in milliseconds relative to the start of a given 
 || avg || numeric || scalar giving the center of this time bin ||
 || label || string || label for this time bin ||
 
-=== Frequency ===
+==== Frequency ====
 This dimension is used in patterns containing power values, but not for voltage patterns (for voltage patterns, init_freq() can be used to generate an empty frequency dimension). The required fields are the same as for time, but the values represent frequencies in Hz.
-
