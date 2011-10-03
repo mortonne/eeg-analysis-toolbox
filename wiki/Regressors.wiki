@@ -1,0 +1,47 @@
+#summary Information on creating an using regressors to run statistical analysis.
+
+= Introduction =
+
+The toolbox supports both univariate analysis (e.g. ANOVA) and multivariate pattern analysis.  These different types of statistics are specified using a common language for defining different classes of events in an experiment.
+
+= Events =
+
+Information about events in the experiment must be stored in an events structure.  This is a vector structure that can have any number of different fields to specify different things about an experiment.  Each element of the events structure gives information about one event.  See [Events Events] for details.  To run a statistical analysis, specific information must be extracted from the events structure using regressor definitions (generally referred to in the toolbox as reg_defs or event_bins).
+
+= Regressors =
+
+Information about factors used in statistical tests are stored in regressors.  A regressor is a vector, where each element is either an integer (from 1 to N) or NaN (to indicate events where that regressor is undefined.  For example, if you have two conditions that alternate, and there are two events, your regressor for those conditions would be:
+
+{{{
+reg = [1 2 1 2 1 2 1 2 1 2];
+}}}
+
+This simply labels each event as belonging to one of two different conditions.
+
+== Regressor Definitions ==
+
+The toolbox contains functions for creating regressor vectors from events structures.  Generally, statistical analysis functions call {{{make_event_index}}} to create regressors.  This function takes a number of different types of input to create regressors in different ways.  The simplest way to make a regressor is by giving the name of a field of the events structure; this will simply use that field as the regressor.  The field must contain numeric, logical, or char data.  It will be translated into sequential integers, which label each unique value of the field.  For example:
+
+{{{
+>> events = struct('condition', {'A' 'B' 'B' 'A' 'A' 'A' 'B'});
+>> [index, levels] = make_event_index(events, 'condition')
+
+index =
+
+     1
+     2
+     2
+     1
+     1
+     1
+     2
+
+
+levels = 
+
+    'A'
+    'B'
+}}}
+
+The 'A' and 'B' conditions are translated into 1 and 2 in the output regressor, here referred to as an "index".  The {{{levels}}} output gives the original label for each condition.
+
