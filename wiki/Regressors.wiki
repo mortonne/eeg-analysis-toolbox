@@ -10,7 +10,7 @@ Information about events in the experiment must be stored in an events structure
 
 = Regressors =
 
-Information about factors used in statistical tests are stored in regressors.  A regressor is a vector, where each element is either an integer (from 1 to N, where N is the number of different conditions) or NaN (to indicate events where that regressor is undefined).  For example, if you have two conditions that alternate, and there are two events, your regressor for those conditions would be:
+Information about factors used in statistical tests are stored in regressors.  A regressor is a vector, where each element is either an integer (from 1 to N, where N is the number of different conditions) or NaN (to indicate events where that regressor is undefined).  For example, if you have two conditions that alternate, and there are ten events, your regressor for those conditions would be:
 
 {{{
 reg = [1 2 1 2 1 2 1 2 1 2];
