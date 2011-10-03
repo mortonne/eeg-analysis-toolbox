@@ -2,6 +2,8 @@
 
 _Statistics objects_ generally contain information about statistical tests or pattern classification, but they can store information about any analysis.  They simply have a name and a reference to a MAT-file that contains the details about the analysis.
 
+This section also describes an important part of the toolbox, regressors.  [Regressors Regressors] are used for many tasks, including calculation of [Averaging event-related averages], creating [Statmaps, statistical maps], and running [Classification pattern classification] analysis.
+
 == Statistical maps ==
 
 Univariate statistical tests produce statistical maps, or _statmaps_.  A separate statistical test is run for each channel, time, and frequency in a pattern to produce a map of significance values.  Statmaps may be created by {{{pattern_statmap}}}, and significance is plotted by many of the plotting functions in the toolbox.  Some tests, such as multi-way ANOVAs, return multiple significance values.  In this case, different effects may be named by a variable called {{{names}}} saved with the stat object.
