@@ -64,6 +64,13 @@ ans =
 
 The expression, {{{'strcmp(condition, ''A'')'}}}, is evaluated for each event.  The output of {{{inStruct}}} is a logical array that is true for events that matched the expression.
 
+What {{{inStruct}}} is doing internally is similar to the following:
+
+{{{
+conditions = {events.condition}; % get a cell array of strings with condition labels
+strcmp(conditions, 'A') % get events for which condition is "A"
+}}}
+
 Event filters are often used to grab subsets of an events structure, using {{{filterStruct}}}.  The next section illustrates how to use event filters to create a regressor.
 
 === Using Filters to Create a Regressor ===
