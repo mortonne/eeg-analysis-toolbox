@@ -115,6 +115,8 @@ levels =
 
 Here, {{{reg_def}}} is a cell array, where each cell contains an event filter.  The events for which {{{reg_def{1}}}} is true correspond to condition 1, and the events for which {{{reg_def{2}}}} is true correspond to condition 2.  All the other events are given a NaN, since they belong to none of the conditions.  In this case, the {{{levels}}} correspond to the filter strings specified by the user.  Some functions include an {{{event_labels}}} input that allows one to specify other labels for the different conditions.
 
+Note that, because in the regressor each event only gets one label, the two event filters must not overlap.  If they do, {{{make_event_index}}} will throw an error.
+
 == Multi-factor Regressors ==
 
 The above examples work for most cases where one is working with a single factor.  However, often for statistical tests, one is interested in the interactions of multiple factors (for example, when running a two-way ANOVA).  For example, I might be interested in a 2X2 design, looking at condition A and B, crossed with whether the trial was correct or not.  To create this regressor, I would simply specify the list of fields, and {{{make_event_index}}} will label each combination of the two fields:
