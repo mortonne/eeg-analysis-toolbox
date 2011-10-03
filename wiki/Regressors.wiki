@@ -113,7 +113,7 @@ levels =
     'strcmp(condition, 'B') & correct==1'
 }}}
 
-Here, {{{reg_def}}} is a cell array, where each cell contains a string with a logical expression.  This expression can operate on any field in the events struct (as long as the values of each field are all of the same type), and must produce a logical value for each event.  The events for which {{{reg_def{1}}}} is true correspond to condition 1, and the events for which {{{reg_def{2}}}} is true correspond to condition 2.  All the other events are given a NaN, since they belong to none of the conditions.  In this case, the {{{levels}}} correspond to the filter strings specified by the user.  Some functions include an {{{event_labels}}} input that allows one to specify other labels for the different conditions.
+Here, {{{reg_def}}} is a cell array, where each cell contains an event filter.  The events for which {{{reg_def{1}}}} is true correspond to condition 1, and the events for which {{{reg_def{2}}}} is true correspond to condition 2.  All the other events are given a NaN, since they belong to none of the conditions.  In this case, the {{{levels}}} correspond to the filter strings specified by the user.  Some functions include an {{{event_labels}}} input that allows one to specify other labels for the different conditions.
 
 == Multi-factor Regressors ==
 
