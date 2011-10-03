@@ -18,6 +18,7 @@
      * [fieldTrip]
    * [Statistics]
      * [Regressors Regressors]
+     * [Averaging Event-related averages]
      * [Statmaps Statistical Maps]
      * [Patclass Pattern Classification]
    * [Plotting]
