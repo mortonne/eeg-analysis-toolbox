@@ -24,7 +24,7 @@ To return a subset of events, use {{{filterStruct}}}.  This function allows one 
 
 == Creating factors ==
 
-{{{make_event_index}}} is used by many functions in the toolbox to generate factors for statistical analyses, and allows for creating factors from fields or combinations of fields, filter strings, and random subsets of events.
+{{{make_event_index}}} is used by many functions in the toolbox to generate factors for statistical analyses, and allows for creating factors from fields or combinations of fields, filter strings, and random subsets of events. See [Regressors Regressors] for details.
 
 When an events dimension is binned, for example when averaging over events, some fields of the events structure will become ambiguous.  That is, the events in the bin might have multiple values on some field.  
 In this case, the field will be removed from the events structure.  On the other hand, fields that have the same value throughout the bin will be kept as part of the events structure.
