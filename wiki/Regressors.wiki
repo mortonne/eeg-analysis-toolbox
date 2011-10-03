@@ -18,7 +18,7 @@ reg = [1 2 1 2 1 2 1 2 1 2];
 
 This simply labels each event as belonging to one of two different conditions.
 
-== Regressor Definitions ==
+== Simple Regressor Definitions ==
 
 The toolbox contains functions for creating regressor vectors from events structures.  Generally, statistical analysis functions call {{{make_event_index}}} to create regressors.  This function takes a number of different types of input to create regressors in different ways.  The simplest way to make a regressor is by giving the name of a field of the events structure; this will simply use that field as the regressor.  The field must contain numeric, logical, or char data.  It will be translated into sequential integers, which label each unique value of the field.  For example:
 
@@ -45,3 +45,44 @@ levels =
 
 The 'A' and 'B' conditions are translated into 1 and 2 in the output regressor, here referred to as an "index".  The {{{levels}}} output gives the original label for each condition.
 
+== Event Filters ==
+
+The above method works well for simple regressor definitions, where you already have a field on the events structure corresponding to the factor of interest.  However, sometimes it is helpful to define more complex conditions on the fly, without creating a new field.  {{{make_event_index}}} also allows one to create regressors using arbitrary logical expressions.  For example, say I want to compare condition A and B events, but I only want to include correct events:
+
+{{{
+>> events = struct('condition', {'A' 'B' 'B' 'A' 'A' 'A' 'B'}, 'correct', {1 1 0 0 1 1 0});
+>> disp_events(events)
+condition correct 
+A         1       
+B         1       
+B         0       
+A         0       
+A         1       
+A         1       
+B         0       
+
+>> reg_def = {'strcmp(condition, ''A'') & correct==1', 'strcmp(condition, ''B'') & correct==1'};
+>> [index, levels] = make_event_index(events, reg_def)
+
+index =
+
+     1
+     2
+   NaN
+   NaN
+     1
+     1
+   NaN
+
+
+levels = 
+
+    'strcmp(condition, 'A') & correct==1'
+    'strcmp(condition, 'B') & correct==1'
+}}}
+
+Here, {[{reg_def}}} is a cell array, where each cell contains a string with a logical expression.  This expression can operate on any field in the events struct (as long as the values of the field are all of the same type), and must produce a logical value for each event.  The events for which {{{reg_def{1}}}} is true correspond to condition 1, and the events for which {{{reg_def{2}}}} is true correspond to condition 2.  All the other events are given a NaN, since they belong to none of the conditions.  In this case, the {{{levels}}} correspond to the filter strings specified by the user.  Some functions include an {{{event_labels}}} input that allows one to specify other labels for the different conditions.
+
+== Multi-factor Regressors ==
+
+The above examples work for most cases where one is working with a single factor.  However, often for statistical tests, one is interested in the interactions of multiple factors (for example, when running a two-way ANOVA).
