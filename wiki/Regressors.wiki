@@ -47,7 +47,28 @@ The 'A' and 'B' conditions are translated into 1 and 2 in the output regressor, 
 
 == Event Filters ==
 
-The above method works well for simple regressor definitions, where you already have a field on the events structure corresponding to the factor of interest.  However, sometimes it is helpful to define more complex conditions on the fly, without creating a new field.  {{{make_event_index}}} also allows one to create regressors using arbitrary logical expressions.  For example, say I want to compare condition A and B events, but I only want to include correct events:
+The above method works well for simple regressor definitions, where you already have a field on the events structure corresponding to the factor of interest.  However, sometimes it is helpful to define more complex conditions on the fly, without creating a new field.  {{{make_event_index}}} also allows one to create regressors using arbitrary logical expressions.
+
+=== Specifying Event Filters ===
+
+An event filter is an expression that can operate on any field in the events struct (as long as the values of the field are all of the same type), and must produce a logical value for each event. It is specified as a string, and will be evaluated on each element of the event structure to determine which events will be included.  {{{inStruct}}} is used to evaluate event filters.  Typically, event fields used must have the same type for every element of the events structure, so that the field can be placed in a numeric array or a cell array of strings.  Then the filter is evaluated, giving a logical array the same length as events; elements that are true specify events that should be included in the filter.  For example, if I want to include only condition A events:
+
+{{{
+>> events = struct('condition', {'A' 'B' 'B' 'A' 'A' 'A' 'B'});                            
+>> inStruct(events, 'strcmp(condition, ''A'')')
+
+ans =
+
+     1     0     0     1     1     1     0
+}}}
+
+The expression, {{{'strcmp(condition, ''A'')'}}}, is evaluated for each event.  The output of {{{inStruct}}} is a logical array that is true for events that matched the expression.
+
+Event filters are often used to grab subsets of an events structure, using {{{filterStruct}}}.  The next section illustrates how to use event filters to create a regressor.
+
+=== Using Filters to Create a Regressor ===
+
+Say I want to compare condition A and B events, but I only want to include correct events:
 
 {{{
 >> events = struct('condition', {'A' 'B' 'B' 'A' 'A' 'A' 'B'}, 'correct', {1 1 0 0 1 1 0});
@@ -81,7 +102,7 @@ levels =
     'strcmp(condition, 'B') & correct==1'
 }}}
 
-Here, {{{reg_def}}} is a cell array, where each cell contains a string with a logical expression.  This expression can operate on any field in the events struct (as long as the values of the field are all of the same type), and must produce a logical value for each event.  The events for which {{{reg_def{1}}}} is true correspond to condition 1, and the events for which {{{reg_def{2}}}} is true correspond to condition 2.  All the other events are given a NaN, since they belong to none of the conditions.  In this case, the {{{levels}}} correspond to the filter strings specified by the user.  Some functions include an {{{event_labels}}} input that allows one to specify other labels for the different conditions.
+Here, {{{reg_def}}} is a cell array, where each cell contains a string with a logical expression.  This expression can operate on any field in the events struct (as long as the values of each field are all of the same type), and must produce a logical value for each event.  The events for which {{{reg_def{1}}}} is true correspond to condition 1, and the events for which {{{reg_def{2}}}} is true correspond to condition 2.  All the other events are given a NaN, since they belong to none of the conditions.  In this case, the {{{levels}}} correspond to the filter strings specified by the user.  Some functions include an {{{event_labels}}} input that allows one to specify other labels for the different conditions.
 
 == Multi-factor Regressors ==
 
