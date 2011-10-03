@@ -17,6 +17,7 @@
      * [EEGLAB]
      * [fieldTrip]
    * [Statistics]
+     * [Regressors Regressors]
      * [Statmaps Statistical Maps]
      * [Patclass Pattern Classification]
    * [Plotting]
