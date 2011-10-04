@@ -3,7 +3,7 @@
 = Introduction =
 
 The toolbox supports both univariate analysis (e.g. ANOVA) and multivariate pattern analysis.  These different types of statistics are specified using a common language for defining different classes of events in an experiment.
-
+test
 = Events =
 
 Information about events in the experiment must be stored in an events structure.  This is a vector structure that can have any number of different fields to specify different things about an experiment.  Each element of the events structure gives information about one event.  See [Events Events] for details.  To run a statistical analysis, specific information must be extracted from the events structure using regressor definitions (generally referred to in the toolbox as {{{reg_defs}}} or {{{event_bins}}}).
