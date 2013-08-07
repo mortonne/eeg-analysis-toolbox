@@ -1,8 +1,8 @@
 = Importing EEGLAB Data =
 
-A function for importing EEGLAB data is being developed.  See [Patterns] for information about the pattern format which EEG structures must be converted to.
+See [Patterns] for information about the pattern format which EEG structures must be converted to. Use {{{eeglab2pat}}} to convert an EEG structure to pattern format, for use with the toolbox.
 
-Normally information about subjects is imported using {{{get_sessdirs}}}.  However, if data are being imported from EEGLAB, you can create an experiment object manually.  If there are three subjects (named subj00, subj02, and subj05) with 3 sessions each, you can create an experiment object as follows:
+Normally information about subjects is imported using {{{get_sessdirs}}}.  However, if data are being imported directly from EEGLAB, you can create an experiment object manually.  If there are three subjects (named subj00, subj02, and subj05) with 3 sessions each, you can create an experiment object as follows:
 
 {{{
 subj_ids = {'subj00' 'subj02' 'subj05'};
