@@ -1,5 +1,5 @@
-= Welcome to the EEG Analysis Toolbox Wiki =
+= Welcome to the APERTURE Wiki =
 
-This wiki contains the latest documentation for the EEG Analysis Toolbox.
+This wiki contains the latest documentation for the APERTURE toolbox.
 
 See the [Installation] page for instructions on installing the toolbox and dependencies, [Tutorials] to get started with common tasks, and the [Manual] for references about data structures and development.
