@@ -39,3 +39,19 @@ getobj(exp, 'subj', 'subj03')
 }}}
 
 Note that the "age" field has now been set for all subjects (our very simple function just sets all subjects to have the same value for "age"). The third input to apply_to_subj is a cell array, which contains inputs to the supplied function to place after subj. This way, f is called as f(subj, 23). Any number of inputs can be passed in this way by adding elements to the cell array. However, for a function to work with apply_to_subj, the first input must always be a subject struct.
+
+=Batch processing patterns=
+
+In principle, apply_to_subj can do any number of operations on a subject's data, including associated events structures and patterns. However, for convenience, there are other functions, apply_to_pat and apply_to_ev, which are specialized for batch processing patterns and events structures. Here, we focus on patterns; apply_to_ev works in a similar manner.
+
+Just as apply_to_subj runs a function that takes a subject as the first input, and passes out a modified subject, apply_to_pat runs a function on a pattern and passes out a modified pattern. The function call is similar, but you also must specify the name of the pattern to be modified. For example:
+
+{{{
+exp.subj = apply_to_pat(exp.subj, 'my_pat', @bin_pattern, {'eventbins', 'condition', 'overwrite', true});
+}}}
+
+This will run bin_pattern on each subject's pattern called "my_pat". The cell array (the fourth input to apply_to_pat) indicates additional inputs to the bin_pattern function, which specify what events to average over (in this example, we assume that there is a field on the events structure that indicates the experimental condition; an average is calculated for each different condition). The "overwrite" option is set to true, indicating that the "my_pat" patterns should be overwritten on disk. Functions that modify patterns, like bin_pattern in this case, support a number of options for saving modified patterns. The help comments for each function list the relevant options. The "save_as" option allows you to indicate a new name to save the modified pattern under. For example, to modify each subject's pattern and save as a new pattern:
+
+{{{
+exp.subj = apply_to_pat(exp.subj, 'my_pat', @bin_pattern, {'eventbins', 'condition', 'save_as', 'my_new_pat'});
+}}}
