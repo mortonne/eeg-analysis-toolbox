@@ -24,6 +24,7 @@ subj = getobj(exp, 'subj', 'subj00');
 subj = f(subj, 23);
 % update the subject on the experiment structure
 exp = setobj(exp, 'subj', subj);
+getobj(exp, 'subj', 'subj00')
 }}}
 
 Note that our sample function takes two inputs, subj and age. To run a function like this on all subjects, you can use apply_to_subj.m. This function takes in a vector of subjects (typically stored in exp.subj), and runs the supplied function on all subjects. The steps run for each subject are essentially the same as above; each subj struct is taken from the larger vector, run through the function, then added back to the subject vector.
