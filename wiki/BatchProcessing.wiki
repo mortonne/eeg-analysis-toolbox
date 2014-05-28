@@ -6,7 +6,35 @@ Most functions that operate on individual "patterns," or EEG datasets, can be ea
 
 = Design =
 
-Each of the batch processing functions is designed to take in a set of subject structures and return a (possibly altered) set of subject structures. They take a function handle that determines what is done to each subject. For example, we'll demonstrate using a simple function that works on one subject to change the subject ID field by adding an "a" to each subject ID. This example uses an [http://www.mathworks.com/help/matlab/matlab_prog/anonymous-functions.html anonymous function] to quickly specify a function handle.
+Each of the batch processing functions is designed to take in a set of subject structures and return a (possibly altered) set of subject structures. They take a function handle that determines what is done to each subject. For example, we'll demonstrate using a simple function that works on one subject to add a new field containing that subject's age. This example uses an [http://www.mathworks.com/help/matlab/matlab_prog/anonymous-functions.html anonymous function] to quickly specify a function handle.
+
+{{{
+f = @(subj, age) setfield(subj, 'age', age);
+}}}
+
+You can run this function on an individual subject by passing in a subj structure:
+
+{{{
+% set up a sample experiment and subject
+exp = init_exp('my_experiment', 'subj', init_subj('subj00'));
+
+% get the subject we just made and added
+subj = getobj(exp, 'subj', 'subj00');
+% run the function
+subj = f(subj, 23);
+% update the subject on the experiment structure
+exp = setobj(exp, 'subj', subj);
+}}}
+
+Note that our sample function takes two inputs, subj and age. To run a function like this on all subjects, you can use apply_to_subj.m. This function takes in a vector of subjects (typically stored in exp.subj), and runs the supplied function on all subjects. The steps run for each subject are essentially the same as above; each subj struct is taken from the larger vector, run through the function, then added back to the subject vector.
+
+{{{
+subj = [];
+subj = addobj(init_subj('subj00'));
+subj = addobj(init_subj('subj01'));
+exp = init_exp('my_experiment', 'subj', subj);
+exp.subj = apply_to_subj(exp.subj, f, {23}};
+}}}
 
 {{{
 f = @(subj) setfield(subj.id, [subj.id 'a']);
