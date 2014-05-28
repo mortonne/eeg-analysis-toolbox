@@ -15,27 +15,32 @@ f = @(subj, age) setfield(subj, 'age', age);
 You can run this function on an individual subject by passing in a subj structure:
 
 {{{
-% set up a sample experiment and subject
-exp = init_exp('my_experiment', 'subj', init_subj('subj00'));
+% set up a sample experiment with a few subjects
+subj = [];
+subj = addobj(subj, init_subj('subj01'));
+subj = addobj(subj, init_subj('subj02'));
+subj = addobj(subj, init_subj('subj03'));
+exp = init_exp('my_experiment', 'subj', subj);
 
-% get the subject we just made and added
-subj = getobj(exp, 'subj', 'subj00');
+% get one of the subjects
+subj = getobj(exp, 'subj', 'subj01');
 % run the function
 subj = f(subj, 23);
 % update the subject on the experiment structure
 exp = setobj(exp, 'subj', subj);
-getobj(exp, 'subj', 'subj00')
+getobj(exp, 'subj', 'subj01')
 }}}
 
-Note that our sample function takes two inputs, subj and age. To run a function like this on all subjects, you can use apply_to_subj.m. This function takes in a vector of subjects (typically stored in exp.subj), and runs the supplied function on all subjects. The steps run for each subject are essentially the same as above; each subj struct is taken from the larger vector, run through the function, then added back to the subject vector.
+Note that the subject has now been updated to have an "age" field, as we specified. To run a function like this on all subjects, you can use apply_to_subj.m. This function takes in a vector of subjects (typically stored in exp.subj), and runs the supplied function on all subjects. In apply_to_subj, the steps run for each subject are essentially the same as above; each subj struct is taken from the larger vector, run through the function, then added back to the subject vector.
 
 {{{
-subj = [];
-subj = addobj(init_subj('subj00'));
-subj = addobj(init_subj('subj01'));
-exp = init_exp('my_experiment', 'subj', subj);
 exp.subj = apply_to_subj(exp.subj, f, {23}};
+getobj(exp, 'subj', 'subj01')
+getobj(exp, 'subj', 'subj02')
+getobj(exp, 'subj', 'subj03')
 }}}
+
+Note that the "age" field has now been set for all subjects (our very simple function just sets all subjects to have the same value for "age").
 
 {{{
 f = @(subj) setfield(subj.id, [subj.id 'a']);
