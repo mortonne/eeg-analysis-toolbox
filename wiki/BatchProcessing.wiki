@@ -32,7 +32,10 @@ getobj(exp, 'subj', 'subj01')
 Note that the subject has now been updated to have an "age" field, as we specified. To run a function like this on all subjects, you can use apply_to_subj.m. This function takes in a vector of subjects (typically stored in exp.subj), and runs the supplied function on all subjects. In apply_to_subj, the steps run for each subject are essentially the same as above; each subj struct is taken from the larger vector, run through the function, then added back to the subject vector.
 
 {{{
+% run the function on every subject
 exp.subj = apply_to_subj(exp.subj, f, {23});
+
+% inspect the modified subjects
 getobj(exp, 'subj', 'subj01')
 getobj(exp, 'subj', 'subj02')
 getobj(exp, 'subj', 'subj03')
