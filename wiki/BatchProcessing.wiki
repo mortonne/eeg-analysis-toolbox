@@ -47,7 +47,7 @@ Note that the "age" field has now been set for all subjects (our very simple fun
 
 In principle, apply_to_subj can do any number of operations on a subject's data, including associated events structures and patterns. However, for convenience, there are other functions, apply_to_pat and apply_to_ev, which are specialized for batch processing patterns and events structures. Here, we focus on patterns; apply_to_ev works in a similar manner.
 
-Just as apply_to_subj runs a function that takes a subject as the first input, and passes out a modified subject, apply_to_pat runs a function on a pattern and passes out a modified pattern. The function call is similar, but you also must specify the name of the pattern to be modified. For example:
+Just as apply_to_subj runs a function that takes a subject as the first input, and passes out a modified subject, apply_to_pat runs a function on a pattern and gets a modified pattern. The modified pattern is then updated on the subject structure, so the set of subjects that is output is updated with information about the new patterns. The function call is similar, but you also must specify the name of the pattern to be modified. For example:
 
 {{{
 exp.subj = apply_to_pat(exp.subj, 'my_pat', @bin_pattern, {'eventbins', 'condition', 'overwrite', true});
