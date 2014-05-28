@@ -1,0 +1,30 @@
+#Manual page on batch processing
+
+= Introduction =
+
+Most functions that operate on individual "patterns," or EEG datasets, can be easily applied to multiple subjects using the batch processing functions. These functions can be used to process multiple subjects in parallel using a cluster or using multiple cores on a computer.
+
+= Design =
+
+Each of the batch processing functions is designed to take in a set of subject structures and return a (possibly altered) set of subject structures. They take a function handle that determines what is done to each subject. For example, we'll demonstrate using a simple function that works on one subject to change the subject ID field by adding an "a" to each subject ID. This example uses an [http://www.mathworks.com/help/matlab/matlab_prog/anonymous-functions.html anonymous function] to quickly specify a function handle.
+
+{{{
+f = @(subj) setfield(subj.id, [subj.id 'a']);
+}}}
+
+You can run this function on an individual subject by passing in a subj structure, modifying the subject ID field:
+
+{{{
+% set up a sample experiment and subject
+exp = init_exp('my_experiment');
+exp = setobj(exp, 'subj', init_subj('subj00'));
+
+% get the subject we just made and added
+subj = getobj(exp, 'subj', 'subj00');
+% run the function
+subj = f(subj);
+% add the new subject
+exp = setobj(exp, 'subj', subj);
+}}}
+
+Because the subject ID field was changed, this adds a "new" subject to the experiment structure. If anything besides the ID field is changed, then the setobj command will overwrite the previous version of that subject. To run a function like this on all subjects, you can use apply_to_subj.m. This function takes in a vector of subjects (typically stored in exp.subj), and 
