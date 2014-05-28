@@ -4,7 +4,7 @@
 
 Most functions that operate on individual "patterns," or EEG datasets, can be easily applied to multiple subjects using the batch processing functions. These functions can be used to process multiple subjects in parallel using a cluster or using multiple cores on a computer.
 
-= Design =
+= Basics =
 
 Each of the batch processing functions is designed to take in a set of subject structures and return a (possibly altered) set of subject structures. They take a function handle that determines what is done to each subject. For example, we'll demonstrate using a simple function that works on one subject to add a new field containing that subject's age. This example uses an [http://www.mathworks.com/help/matlab/matlab_prog/anonymous-functions.html anonymous function] to quickly specify a function handle.
 
@@ -34,31 +34,10 @@ getobj(exp, 'subj', 'subj01')
 Note that the subject has now been updated to have an "age" field, as we specified. To run a function like this on all subjects, you can use apply_to_subj.m. This function takes in a vector of subjects (typically stored in exp.subj), and runs the supplied function on all subjects. In apply_to_subj, the steps run for each subject are essentially the same as above; each subj struct is taken from the larger vector, run through the function, then added back to the subject vector.
 
 {{{
-exp.subj = apply_to_subj(exp.subj, f, {23}};
+exp.subj = apply_to_subj(exp.subj, f, {23});
 getobj(exp, 'subj', 'subj01')
 getobj(exp, 'subj', 'subj02')
 getobj(exp, 'subj', 'subj03')
 }}}
 
-Note that the "age" field has now been set for all subjects (our very simple function just sets all subjects to have the same value for "age").
-
-{{{
-f = @(subj) setfield(subj.id, [subj.id 'a']);
-}}}
-
-You can run this function on an individual subject by passing in a subj structure, modifying the subject ID field:
-
-{{{
-% set up a sample experiment and subject
-exp = init_exp('my_experiment');
-exp = setobj(exp, 'subj', init_subj('subj00'));
-
-% get the subject we just made and added
-subj = getobj(exp, 'subj', 'subj00');
-% run the function
-subj = f(subj);
-% add the new subject
-exp = setobj(exp, 'subj', subj);
-}}}
-
-Because the subject ID field was changed, this adds a "new" subject to the experiment structure. If anything besides the ID field is changed, then the setobj command will overwrite the previous version of that subject. To run a function like this on all subjects, you can use apply_to_subj.m. This function takes in a vector of subjects (typically stored in exp.subj), and 
+Note that the "age" field has now been set for all subjects (our very simple function just sets all subjects to have the same value for "age"). The third input to apply_to_subj is a cell array, which contains inputs to the supplied function to place after subj. This way, f is called as f(subj, 23). Any number of inputs can be passed in this way by adding elements to the cell array. However, for a function to work with apply_to_subj, the first input must always be a subject struct.
