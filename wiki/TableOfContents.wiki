@@ -6,6 +6,7 @@
      * [Events]
      * [Patterns]
      * [Statistics]
+   * [BatchProcessing]
    * [Importing]
      * [RawImport Raw Data]
      * [EEGLAB]
